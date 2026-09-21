@@ -1,0 +1,55 @@
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Station";
+}
+<h1>Station</h1>
+<p class="lede">Clinician desktop. Find a patient, open the chart, work the schedule, clear the inbox.</p>
+<div class="cards">
+    <a class="card" href="/Inbox">
+        <h2>Inbox</h2>
+        <div class="meta">@Model.OpenInbox open items — results, refills, messages</div>
+    </a>
+    <a class="card" href="/Schedule">
+        <h2>Schedule</h2>
+        <div class="meta">@Model.TodayAppointments visits on today's board</div>
+    </a>
+    <a class="card" href="/Patients">
+        <h2>Find patient</h2>
+        <div class="meta">Master Patient Index — search or register</div>
+    </a>
+    <div class="card">
+        <h2>Open encounters</h2>
+        <div class="meta">@Model.OpenEncounters ED / inpatient stays in progress</div>
+    </div>
+</div>
+<div class="grid">
+    <div>
+        <h2>Up next</h2>
+        <table class="data">
+            <thead><tr><th>Time</th><th>Patient</th><th>Clinic</th><th>Reason</th></tr></thead>
+            <tbody>
+            @foreach (var a in Model.Next)
+            {
+                <tr>
+                    <td>@a.StartsAt.ToLocalTime().ToString("HH:mm")</td>
+                    <td><a href="/Chart/@a.PatientId">@a.Patient?.FullName</a></td>
+                    <td>@a.Clinic</td>
+                    <td>@a.Reason</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+    <div>
+        <h2>Unit / ED board</h2>
+        @foreach (var e in Model.Board)
+        {
+            <p>
+                <span class="pill @(e.Type == "Emergency" ? "ed" : "ip")">@e.Type</span>
+                <a href="/Chart/@e.PatientId">@e.Patient?.FullName</a>
+                · @e.Location
+            </p>
+        }
+    </div>
+</div>

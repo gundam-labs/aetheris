@@ -1,0 +1,27 @@
+@page
+@model Aetheris.Web.Pages.Patients.IndexModel
+@{
+    ViewData["Title"] = "Find patient";
+}
+<h1>Find patient</h1>
+<p class="lede">Master Patient Index. Search by family name, given name, or MRN. Register only after you have looked.</p>
+<form method="get" class="row">
+    <input type="text" name="q" value="@Model.Q" placeholder="Vasquez or HV-100001" style="max-width:320px" />
+    <button class="btn" type="submit">Search</button>
+    <a class="btn secondary" href="/Patients/Register">Register new</a>
+</form>
+<table class="data">
+    <thead><tr><th>MRN</th><th>Name</th><th>DOB</th><th>Sex</th><th></th></tr></thead>
+    <tbody>
+    @foreach (var p in Model.Results)
+    {
+        <tr>
+            <td>@p.Mrn</td>
+            <td>@p.FullName</td>
+            <td>@p.DateOfBirth.ToString("yyyy-MM-dd")</td>
+            <td>@p.Sex</td>
+            <td><a href="/Chart/@p.Id">Open chart</a></td>
+        </tr>
+    }
+    </tbody>
+</table>
