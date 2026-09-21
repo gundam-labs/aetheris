@@ -1,0 +1,26 @@
+@page
+@model Aetheris.Web.Pages.Account.LoginModel
+@{
+    ViewData["Title"] = "Sign in";
+    Layout = "_Layout";
+}
+<div class="login">
+    <h1>Aetheris Station</h1>
+    <p class="lede">Harborview General — demonstration tenant</p>
+    @if (Model.Error is not null)
+    {
+        <p class="err">@Model.Error</p>
+    }
+    <form method="post">
+        <label>Staff email</label>
+        <input asp-for="Email" type="email" />
+        <label>Password</label>
+        <input asp-for="Password" type="password" />
+        <button class="btn" type="submit">Open station</button>
+    </form>
+    <p class="lede" style="margin-top:16px">
+        Maya Rao, MD / Clinician#2026<br />
+        James Okoro, RN / Nurse#2026<br />
+        Priya Shah / Registrar#2026
+    </p>
+</div>

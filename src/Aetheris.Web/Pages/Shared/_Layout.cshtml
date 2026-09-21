@@ -1,0 +1,37 @@
+@inject CurrentUser Current
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@(ViewData["Title"] ?? "Station") · Aetheris</title>
+    <link rel="stylesheet" href="~/css/station.css" asp-append-version="true" />
+</head>
+<body>
+    <header class="topbar">
+        <a class="brand" href="/">Aetheris</a>
+        <span class="tenant">@(Current.TenantName)</span>
+        <form class="find" action="/Patients" method="get">
+            <input type="search" name="q" placeholder="Find patient — name, MRN, or DOB" value="@Context.Request.Query["q"]" />
+        </form>
+        <nav class="topnav">
+            <a href="/">Station</a>
+            <a href="/Schedule">Schedule</a>
+            <a href="/Inbox">Inbox</a>
+            <a href="/Patients">MPI</a>
+        </nav>
+        @if (Current.IsAuthenticated)
+        {
+            <div class="who">
+                <strong>@Current.DisplayName</strong>
+                <span>@Current.Role</span>
+                <a href="/Account/Logout">Sign out</a>
+            </div>
+        }
+    </header>
+    <div class="demo-banner">Demonstration HIS. Fictional patients only. Not a certified EHR. Do not enter real records.</div>
+    <main class="shell">
+        @RenderBody()
+    </main>
+</body>
+</html>
