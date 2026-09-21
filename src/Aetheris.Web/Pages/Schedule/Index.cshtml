@@ -1,0 +1,24 @@
+@page
+@model Aetheris.Web.Pages.Schedule.IndexModel
+@{
+    ViewData["Title"] = "Schedule";
+}
+<h1>Schedule</h1>
+<p class="lede">Today's clinic board. Open the chart from the row — do not book a second visit until you have the patient in view.</p>
+<table class="data">
+    <thead><tr><th>Time</th><th>Patient</th><th>MRN</th><th>Clinic</th><th>Provider</th><th>Reason</th><th>Status</th></tr></thead>
+    <tbody>
+    @foreach (var a in Model.Day)
+    {
+        <tr>
+            <td>@a.StartsAt.ToLocalTime().ToString("HH:mm")</td>
+            <td><a href="/Chart/@a.PatientId">@a.Patient?.FullName</a></td>
+            <td>@a.Patient?.Mrn</td>
+            <td>@a.Clinic</td>
+            <td>@a.Provider</td>
+            <td>@a.Reason</td>
+            <td>@a.Status</td>
+        </tr>
+    }
+    </tbody>
+</table>

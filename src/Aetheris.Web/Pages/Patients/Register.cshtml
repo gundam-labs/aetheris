@@ -1,0 +1,25 @@
+@page
+@model Aetheris.Web.Pages.Patients.RegisterModel
+@{
+    ViewData["Title"] = "Register patient";
+}
+<h1>Register patient</h1>
+<p class="lede">Creates an MRN on this tenant after you have searched the index.</p>
+@if (Model.Error is not null) { <p class="err">@Model.Error</p> }
+<form method="post" style="max-width:420px">
+    <label>Given name</label>
+    <input asp-for="GivenName" />
+    <label>Family name</label>
+    <input asp-for="FamilyName" />
+    <label>Date of birth</label>
+    <input asp-for="DateOfBirth" type="date" />
+    <label>Sex</label>
+    <select asp-for="Sex">
+        <option>F</option>
+        <option>M</option>
+        <option>X</option>
+    </select>
+    <label>Phone</label>
+    <input asp-for="Phone" />
+    <button class="btn" type="submit">Create chart</button>
+</form>
