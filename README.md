@@ -2,37 +2,58 @@
 
 Multi-tenant hospital information system (HIS / HMS) built as SaaS.
 
-**Stack:** .NET 8, ASP.NET Core, vertical slices, one hospital = one tenant.
+**Stack:** .NET 8, ASP.NET Core Razor Pages, EF Core SQLite, vertical slices by screen.
+**Repo:** https://github.com/gundam-labs/aetheris
 
-This is a demonstration product. Not a certified EHR. Do not store live patient records.
+Demonstration product. Not a certified EHR. Do not store live patient records.
 
-## Category name
+## What we borrowed (workflows, not a copy)
 
-Hospitals buy this class of software as:
+Popular EHRs share the same clinical desktop. Epic calls the shell Hyperspace; Oracle Health calls the chart PowerChart. Aetheris uses its own names for the same jobs:
 
-- **HIS** — Hospital Information System (clinical + admin on one platform)
-- **HMS** — Hospital Management System (ops, beds, billing, pharmacy)
-- **EHR / EMR** — the clinical chart inside the HIS
+| Job in a hospital | Typical EHR surface | Aetheris |
+| --- | --- | --- |
+| Clinician desktop | Hyperspace / PowerChart | Station |
+| Identify the person | Prelude / registration | Find patient (MPI) |
+| The record | Chart Review / Snapshot | Chart |
+| Clinic day | Cadence | Schedule |
+| Results, refills, messages | In Basket / Message Center | Inbox |
+| Admit / stay / discharge | ADT / Grand Central | Encounter on the chart |
+| Orders, pharmacy, lab, billing | CPOE / Willow / Beaker / Resolute | not built yet |
 
-**Aetheris** is the product name. The category is HIS.
+No Epic or Oracle trademarks on the product. No live PHI.
 
-## How we build
+## Run
 
-Organic, slice by slice. No big-bang modules.
+```
+cd src/Aetheris.Web
+dotnet run
+```
 
-1. Tenant + identity (a hospital can sign in)
-2. Master Patient Index (register / find a patient)
-3. Encounter / visit
-4. Appointments and beds
-5. Orders (lab, pharmacy) later
-6. Billing later
+Open http://localhost:5088
 
-Vertical slice = feature folder with command, query, endpoint, and tests together.
+| Staff | Password | Role |
+| --- | --- | --- |
+| maya.rao@harborview.demo | Clinician#2026 | Attending |
+| james.okoro@harborview.demo | Nurse#2026 | Nurse |
+| priya.shah@harborview.demo | Registrar#2026 | Registrar |
 
-## Repo
+Tenant: Harborview General. SQLite file `aetheris.db` is created on first run.
 
-Private: https://github.com/gundam-labs/aetheris
+## Layout
 
-Owner account: `gundam-labs`.
+```
+src/Aetheris.Web/
+  Domain/           entities + MRN
+  Data/             EF context + demo seed
+  Tenancy/          current user from cookie
+  Pages/Account     login
+  Pages/Patients    MPI search + register
+  Pages/Chart       snapshot, problems, meds, allergies, start visit
+  Pages/Schedule    today's board
+  Pages/Inbox       results / refills / portal messages
+```
 
-Do not mix this brand with Meridian Trust, BadAss Bank, or Dhanvi Dual unless asked.
+## Next slices
+
+Orders (lab + meds), results filing, ADT transfer, bed board, billing.
