@@ -1,0 +1,91 @@
+@page "{id:guid}"
+@model Aetheris.Web.Pages.Chart.IndexModel
+@{
+    ViewData["Title"] = Model.Patient?.FullName ?? "Chart";
+    var p = Model.Patient!;
+    var age = DateTime.Today.Year - p.DateOfBirth.Year;
+    if (p.DateOfBirth.ToDateTime(TimeOnly.MinValue) > DateTime.Today.AddYears(-age)) { age--; }
+}
+<div class="banner">
+    <div>
+        <div class="name">@p.FullName</div>
+        <div class="meta">@p.Sex · @age y · DOB @p.DateOfBirth.ToString("dd MMM yyyy")</div>
+    </div>
+    <div class="mrn">MRN @p.Mrn</div>
+    <div>
+        @if (p.Allergies.Any(a => a.Criticality == "High"))
+        {
+            <span class="crit">ALLERGY @string.Join(", ", p.Allergies.Select(a => a.Substance))</span>
+        }
+        else if (p.Allergies.Any())
+        {
+            <span>Allergies: @string.Join(", ", p.Allergies.Select(a => a.Substance))</span>
+        }
+        else
+        {
+            <span>NKDA</span>
+        }
+    </div>
+</div>
+<div class="row">
+    <section class="panel">
+        <h3>Problem list</h3>
+        @foreach (var pr in p.Problems)
+        {
+            <div>@pr.Display <span class="pill">@pr.Status</span></div>
+        }
+        @if (!p.Problems.Any()) { <div class="meta">None recorded</div> }
+    </section>
+    <section class="panel">
+        <h3>Medications</h3>
+        @foreach (var m in p.Medications)
+        {
+            <div><strong>@m.Name</strong> — @m.Sig</div>
+        }
+        @if (!p.Medications.Any()) { <div class="meta">None recorded</div> }
+    </section>
+    <section class="panel">
+        <h3>Allergies</h3>
+        @foreach (var a in p.Allergies)
+        {
+            <div class="@(a.Criticality == "High" ? "crit" : "")">@a.Substance — @a.Reaction (@a.Criticality)</div>
+        }
+        @if (!p.Allergies.Any()) { <div class="meta">No known drug allergies</div> }
+    </section>
+</div>
+<div class="row" style="margin-top:16px">
+    <section class="panel">
+        <h3>Encounters</h3>
+        <table class="data">
+            <thead><tr><th>When</th><th>Type</th><th>Where</th><th>Complaint</th><th>Status</th></tr></thead>
+            <tbody>
+            @foreach (var e in p.Encounters.OrderByDescending(x => x.StartedAt))
+            {
+                <tr>
+                    <td>@e.StartedAt.ToLocalTime().ToString("dd MMM HH:mm")</td>
+                    <td>@e.Type</td>
+                    <td>@e.Location</td>
+                    <td>@e.ChiefComplaint</td>
+                    <td>@e.Status</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </section>
+    <section class="panel">
+        <h3>Start encounter</h3>
+        <form method="post" asp-page-handler="Start">
+            <label>Type</label>
+            <select asp-for="Type">
+                <option>Outpatient</option>
+                <option>Inpatient</option>
+                <option>Emergency</option>
+            </select>
+            <label>Location</label>
+            <input asp-for="Location" />
+            <label>Chief complaint</label>
+            <input asp-for="ChiefComplaint" />
+            <button class="btn" type="submit">Open visit</button>
+        </form>
+    </section>
+</div>
