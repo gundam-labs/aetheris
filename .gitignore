@@ -1,0 +1,40 @@
+# Build
+bin/
+obj/
+out/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# IDE
+.vs/
+.idea/
+*.swp
+.DS_Store
+
+# Secrets and local config
+appsettings.Development.json
+appsettings.Local.json
+*.pfx
+.env
+.env.*
+!.env.example
+
+# Test and coverage
+TestResults/
+coverage/
+*.coverage
+*.coveragexml
+
+# NuGet
+*.nupkg
+*.snupkg
+.nuget/
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Logs
+*.log
+logs/
