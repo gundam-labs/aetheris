@@ -16,6 +16,9 @@ public sealed class AetherisDbContext : DbContext
     public DbSet<Encounter> Encounters => Set<Encounter>();
     public DbSet<Appointment> Appointments => Set<Appointment>();
     public DbSet<InboxItem> Inbox => Set<InboxItem>();
+    public DbSet<LabOrder> LabOrders => Set<LabOrder>();
+    public DbSet<Observation> Observations => Set<Observation>();
+    public DbSet<InterfaceMessage> InterfaceMessages => Set<InterfaceMessage>();
 
     protected override void OnModelCreating(ModelBuilder model)
     {
@@ -34,5 +37,13 @@ public sealed class AetherisDbContext : DbContext
             .HasOne(x => x.Patient).WithMany().HasForeignKey(x => x.PatientId);
         model.Entity<InboxItem>()
             .HasOne(x => x.Patient).WithMany().HasForeignKey(x => x.PatientId);
+        model.Entity<LabOrder>()
+            .HasOne(x => x.Patient).WithMany().HasForeignKey(x => x.PatientId);
+        model.Entity<LabOrder>()
+            .HasIndex(x => new { x.TenantId, x.PlacerOrderNumber }).IsUnique();
+        model.Entity<Observation>()
+            .HasOne(x => x.Patient).WithMany().HasForeignKey(x => x.PatientId);
+        model.Entity<InterfaceMessage>()
+            .HasIndex(x => new { x.TenantId, x.ControlId, x.Direction });
     }
 }
