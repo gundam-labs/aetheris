@@ -1,7 +1,7 @@
 import { seed, STAFF } from "./data";
 import type { Encounter, Patient, Staff, Store } from "./types";
 
-const KEY = "aetheris.station.v1";
+const KEY = "aetheris.station.v2";
 const USER = "aetheris.user.v1";
 
 export function loadStore(): Store {
@@ -75,5 +75,29 @@ export function startEncounter(
 export function closeInbox(store: Store, id: string) {
   const item = store.inbox.find((x) => x.id === id);
   if (item) item.status = "Done";
+  saveStore(store);
+}
+
+export function placeOrder(store: Store, patientId: string, panel: "ABG" | "CBC") {
+  const placer = `AE-${Date.now()}`;
+  store.orders.unshift({
+    id: crypto.randomUUID(),
+    patientId,
+    placer,
+    code: panel === "CBC" ? "57021-8" : "24336-0",
+    display: panel === "CBC" ? "CBC panel" : "Blood gases",
+    status: "Ordered",
+    destination: "LIS",
+    orderedAt: new Date().toISOString(),
+  });
+  store.interfaces.unshift({
+    id: crypto.randomUUID(),
+    direction: "Out",
+    type: "ORM^O01",
+    from: "AETHERIS",
+    control: `ORM-${placer}`,
+    ack: "",
+    at: new Date().toISOString(),
+  });
   saveStore(store);
 }
